@@ -1,4 +1,4 @@
-while read bezeichnung; do
+bezeichnung=$1
     case "$bezeichnung" in
         BS|Bes)     echo "Betriebssysteme";;
         NT|NWT|NW)  echo "Netzwerktechnik";;
@@ -11,4 +11,3 @@ while read bezeichnung; do
         S|Sp)       echo "Sport";;
         *)          echo "Kürzel unbekannt";;
     esac
-done
