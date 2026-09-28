@@ -1,6 +1,6 @@
 #!/bin/bash
-while read kürzel; do
-    case "$kürzel" in
+while read kuerzel; do
+    case "$kuerzel" in
         BS|BeS)     echo "Betriebssysteme";;
         NT|NWT|NW)  echo "Netzwerktechnik";;
         An|AnE|AP)  echo "Anwendungsentwicklung";;
