@@ -5,6 +5,7 @@ bezeichnung=$1
         An|AnE|AP)  echo "Anwendungsentwicklung";;
         CS)         echo "Computer-Systeme";;
         E)          echo "Englisch";;
+        D)          echo "Deutsch";;
         M|Math)     echo "Mathematik";;
         PuG|Soz|SK) echo "Politik und Gesellschaft";;
         R|Rel)      echo "Religion";;
