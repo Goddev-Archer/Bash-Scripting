@@ -1,6 +1,6 @@
 bezeichnung=$1
     case "$bezeichnung" in
-        BS|Bes)     echo "Betriebssysteme";;
+        BS|BeS)     echo "Betriebssysteme";;
         NT|NWT|NW)  echo "Netzwerktechnik";;
         An|AnE|AP)  echo "Anwendungsentwicklung";;
         CS)         echo "Computer-Systeme";;
