@@ -12,3 +12,4 @@ bezeichnung=$1
         S|Sp)       echo "Sport";;
         *)          echo "Kürzel unbekannt";;
     esac
+    
