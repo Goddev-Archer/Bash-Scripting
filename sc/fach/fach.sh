@@ -9,6 +9,6 @@ while read bezeichnung; do
         PuG|Soz|SK) echo "Politik und Gesellschaft";;
         R|Rel)      echo "Religion";;
         S|Sp)       echo "Sport";;
-        *)          echo "keine Fachbezeichnung";;
+        *)          echo "Kürzel unbekannt";;
     esac
 done
