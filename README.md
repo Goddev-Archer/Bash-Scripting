@@ -9,7 +9,8 @@
 
 | Pfad / Datei | Thema | Beschreibung |
 | :--- | :--- | :--- |
-| [`sc/script.sh`](sc/script.sh) | **Auswertungsreihenfolge & `case`** | Demonstration von Mehrfachmustern, Auswertungsreihenfolge und typischen Logik-Fallstricken bei `case`. |
+| [`sc/zahlen/script.sh`](sc/zahlen/script.sh) | **Auswertungsreihenfolge & `case`** | Demonstration von Mehrfachmustern, Auswertungsreihenfolge und typischen Logik-Fallstricken bei `case`. |
+| [`sc/variablen/vartest.sh`](sc/variablen/vartest.sh) | **Variablen & Parameter Expansion** | Demonstration von Zuweisungen, Stringlänge (`${#var}`), Substrings (`${var:start:len}`) und `for`-Schleifen. |
 | [`sc/fach/`](sc/fach/) | **Projekt: Fachumwandlung** | Umwandlung von Schul- und Berufsschulkürzeln in Zeugnis-Vollbezeichnungen. |
 | ├── [`fach.sh`](sc/fach/fach.sh) | *Parameterverarbeitung* | Einzelabfrage über `$1` (Kommandozeilenargument). |
 | ├── [`fach-rek.sh`](sc/fach/fach-rek.sh) | *Streamverarbeitung* | Zeilenweise Stapelverarbeitung über `stdin` (`while read`). |
@@ -18,20 +19,32 @@
 
 ---
 
-## 🚀 Schnellanleitung: Skripte ausführen
+## 🚀 Schnellanleitung: Repository klonen & Skripte ausführen
 
-### 1. Ausführungsrechte vergeben (unter Linux / WSL)
+### 1. Repository klonen (WICHTIG für Git-Nutzung!)
+> [!IMPORTANT]
+> **Nicht als ZIP herunterladen**, wenn Git verwendet werden soll! Ein ZIP-Download enthält absichtlich **keinen `.git`-Ordner**, wodurch Versionskontrolle und spätere Updates (`git pull`) nicht möglich sind.
+> 
+> **Richtig vorgehen:**
+> ```bash
+> git clone <REPO-URL>
+> cd Bash-Scripting
+> ```
+
+### 2. Ausführungsrechte vergeben (unter Linux / WSL)
 Bevor ein Skript direkt mit `./skriptname.sh` aufgerufen werden kann, muss das Ausführungsbit gesetzt werden:
 ```bash
-chmod +x sc/script.sh
+chmod +x sc/zahlen/script.sh
+chmod +x sc/variablen/vartest.sh
 chmod +x sc/fach/fach.sh
 chmod +x sc/fach/fach-rek.sh
 ```
 
-### 2. Skript ausführen
+### 3. Skripte ausführen
 ```bash
 # Aufruf direkt (benötigt gesetztes Ausführungsrecht und korrekte Shebang):
 ./sc/fach/fach.sh D
+./sc/variablen/vartest.sh
 
 # Oder explizit über den Bash-Interpreter:
 bash sc/fach/fach.sh D
@@ -45,7 +58,13 @@ bash sc/fach/fach.sh D
 * Steht in der **allersten Zeile** eines Skripts.
 * Teilt dem Betriebssystem mit, welcher Interpreter zur Ausführung des Codes geladen werden soll (hier `/bin/bash`).
 
-### 2. Spezielle Variablen & Parameter
+### 2. Variablen & Parameter Expansion
+* **Zuweisung:** `name="Wert"` (Keine Leerzeichen um das `=`!).
+* **Zugriff:** `$name` oder `${name}`.
+* **String-Länge:** `${#variable}` gibt die Anzahl der Zeichen zurück.
+* **Teilzeichenkette (Substring):** `${variable:offset:laenge}` extrahiert einen Teilstring (z. B. `${text:0:1}` für das erste Zeichen).
+
+### 3. Spezielle Variablen & Parameter
 
 | Variable | Bedeutung | Beispiel |
 | :--- | :--- | :--- |
@@ -58,7 +77,7 @@ bash sc/fach/fach.sh D
 > [!TIP]
 > Variablen sollten bei Vergleichen oder in `case` immer in doppelte Anführungszeichen gesetzt werden (`"$1"`), um Fehler durch Leerzeichen oder leere Werte zu verhindern.
 
-### 3. Fallunterscheidungen mit `case ... esac`
+### 4. Fallunterscheidungen mit `case ... esac`
 Die `case`-Verzweigung eignet sich hervorragend, um eine Variable gegen viele feste Werte oder Muster zu prüfen (übersichtlicher als viele `if ... elif`-Zweige):
 
 ```bash
@@ -75,9 +94,11 @@ case "$variable" in
 esac
 ```
 * **`;;`** beendet einen Musterblock (vergleichbar mit `break` in anderen Programmiersprachen).
-* **Auswertungsreihenfolge:** Bash prüft die Muster **von oben nach unten**. Sobald das erste Muster zutrifft, wird der Block ausgeführt und das `case` beendet. (Siehe Beispiel in [`sc/script.sh`](sc/script.sh)).
+* **Auswertungsreihenfolge:** Bash prüft die Muster **von oben nach unten**. Sobald das erste Muster zutrifft, wird der Block ausgeführt und das `case` beendet. (Siehe Beispiel in [`sc/zahlen/script.sh`](sc/zahlen/script.sh)).
 
-### 4. Zeilenweises Einlesen mit `while read`
+### 5. Schleifen
+
+#### Zeilenweises Einlesen mit `while read`
 Um Textdaten oder Streams zeilenweise zu verarbeiten:
 ```bash
 while read zeile; do
@@ -86,7 +107,14 @@ done
 ```
 * Liest solange aus der Standardeingabe (`stdin`), bis das Dateiende (**EOF** / *End of File*) erreicht wird.
 
-### 5. I/O-Umleitungen & Pipes
+#### C-Style `for`-Schleife
+```bash
+for ((i=0; i<10; i++)); do
+    echo "Index: $i"
+done
+```
+
+### 6. I/O-Umleitungen & Pipes
 
 | Operator | Funktion | Beispiel |
 | :--- | :--- | :--- |
