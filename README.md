@@ -9,9 +9,17 @@
 
 | Pfad / Datei | Thema | Beschreibung |
 | :--- | :--- | :--- |
-| [`sc/zahlen/script.sh`](sc/zahlen/script.sh) | **Auswertungsreihenfolge & `case`** | Demonstration von Mehrfachmustern, Auswertungsreihenfolge und typischen Logik-Fallstricken bei `case`. |
-| [`sc/variablen/vartest.sh`](sc/variablen/vartest.sh) | **Variablen & Parameter Expansion** | Demonstration von Zuweisungen, Stringlänge (`${#var}`), Substrings (`${var:start:len}`) und `for`-Schleifen. |
-| [`sc/fach/`](sc/fach/) | **Projekt: Fachumwandlung** | Umwandlung von Schul- und Berufsschulkürzeln in Zeugnis-Vollbezeichnungen. |
+| **`sc/Arrays/`** | **Arrays (Indizierte Felder)** | Erstellung, Manipulation, Abfrage und Löschen von Arrays. |
+| ├── [`array.sh`](sc/Arrays/array.sh) | *Array-Operationen* | Zuweisung per Index, Anhängen (`+=`), Gesamtanzahl (`${#array[*]}`), Elementlänge, Kopieren und `unset`. |
+| └── [`test.sh`](sc/Arrays/test.sh) | *Array-Grundlagen* | Kompaktes Beispiel für Deklaration und Ausgabe eines Arrays (`test=(...)`). |
+| **`sc/Eingabeverarbeitung/`** | **String- & Argumentverarbeitung** | Zerlegen, Durchlaufen und Manipulieren von Texten und Parametern. |
+| ├── [`reverse.sh`](sc/Eingabeverarbeitung/reverse.sh) | *String umkehren* | Liest Argumente (`$*`) ein und gibt sie über eine dekrementierende `for`-Schleife und `echo -n` zeichenweise rückwärts aus. |
+| └── [`script.sh`](sc/Eingabeverarbeitung/script.sh) | *Zeichenweise Iteration* | Durchläuft Argument `$1` von Index 0 bis zur Länge und gibt jedes Zeichen mit Index aus (`${str:$i:1}`). |
+| **`sc/variablen/`** | **Variablen & Parameter Expansion** | Grundlagen zu Variablen, Stringlängen und Substring-Extraktion. |
+| └── [`vartest.sh`](sc/variablen/vartest.sh) | *Variablen-Demo* | Variablenzuweisung ohne Leerzeichen, Zeichenkettenlänge (`${#var}`), Substrings (`${var:i:1}`) und Schleifendurchlauf. |
+| **`sc/zahlen/`** | **Auswertungsreihenfolge & `case`** | Fallunterscheidungen, Mehrfachmuster und Logik. |
+| └── [`script.sh`](sc/zahlen/script.sh) | *Mustervergleich* | Demonstration von ODER-Mustern (`|`), `while read` und der Auswertungsreihenfolge von oben nach unten (Würfelzahlen-Falle). |
+| **`sc/fach/`** | **Projekt: Fachumwandlung** | Umwandlung von Schul- und Berufsschulkürzeln in Zeugnis-Vollbezeichnungen. |
 | ├── [`fach.sh`](sc/fach/fach.sh) | *Parameterverarbeitung* | Einzelabfrage über `$1` (Kommandozeilenargument). |
 | ├── [`fach-rek.sh`](sc/fach/fach-rek.sh) | *Streamverarbeitung* | Zeilenweise Stapelverarbeitung über `stdin` (`while read`). |
 | ├── [`input`](sc/fach/input) | *Testdatensatz* | Beispieldaten mit gültigen und ungültigen Testfällen. |
@@ -34,17 +42,19 @@
 ### 2. Ausführungsrechte vergeben (unter Linux / WSL)
 Bevor ein Skript direkt mit `./skriptname.sh` aufgerufen werden kann, muss das Ausführungsbit gesetzt werden:
 ```bash
-chmod +x sc/zahlen/script.sh
-chmod +x sc/variablen/vartest.sh
-chmod +x sc/fach/fach.sh
-chmod +x sc/fach/fach-rek.sh
+chmod +x sc/Arrays/*.sh
+chmod +x sc/Eingabeverarbeitung/*.sh
+chmod +x sc/variablen/*.sh
+chmod +x sc/zahlen/*.sh
+chmod +x sc/fach/*.sh
 ```
 
 ### 3. Skripte ausführen
 ```bash
 # Aufruf direkt (benötigt gesetztes Ausführungsrecht und korrekte Shebang):
 ./sc/fach/fach.sh D
-./sc/variablen/vartest.sh
+./sc/Eingabeverarbeitung/reverse.sh Hallo Welt
+./sc/Arrays/array.sh
 
 # Oder explizit über den Bash-Interpreter:
 bash sc/fach/fach.sh D
@@ -59,7 +69,7 @@ bash sc/fach/fach.sh D
 * Teilt dem Betriebssystem mit, welcher Interpreter zur Ausführung des Codes geladen werden soll (hier `/bin/bash`).
 
 ### 2. Variablen & Parameter Expansion
-* **Zuweisung:** `name="Wert"` (Keine Leerzeichen um das `=`!).
+* **Zuweisung:** `name="Wert"` (Wichtig: **Keine Leerzeichen** vor oder nach dem `=`!).
 * **Zugriff:** `$name` oder `${name}`.
 * **String-Länge:** `${#variable}` gibt die Anzahl der Zeichen zurück.
 * **Teilzeichenkette (Substring):** `${variable:offset:laenge}` extrahiert einen Teilstring (z. B. `${text:0:1}` für das erste Zeichen).
@@ -71,13 +81,51 @@ bash sc/fach/fach.sh D
 | `$0` | Name des ausgeführten Skripts | `./fach.sh` |
 | `$1`, `$2`, ... | Das 1., 2. etc. übergebene Argument | Bei `./fach.sh D` ist `$1="D"` |
 | `$#` | Anzahl der übergebenen Argumente | `1` |
-| `$@` / `$*` | Liste aller übergebenen Argumente | `"D"` |
+| `$*` | Alle Argumente als **ein einziger String** | `"Arg1 Arg2"` |
+| `$@` | Alle Argumente als **einzelne Wörter/Elemente** | `"Arg1" "Arg2"` |
 | `$?` | Rückgabewert (Exit-Code) des letzten Befehls | `0` = Erfolg, `!= 0` = Fehler |
 
 > [!TIP]
 > Variablen sollten bei Vergleichen oder in `case` immer in doppelte Anführungszeichen gesetzt werden (`"$1"`), um Fehler durch Leerzeichen oder leere Werte zu verhindern.
 
-### 4. Fallunterscheidungen mit `case ... esac`
+### 4. Arrays (Indizierte Felder)
+
+Arrays ermöglichen das Speichern mehrerer Werte in einer einzigen Variablen (0-basierter Index):
+
+```bash
+# 1. Deklaration / Initialisierung
+tage=(Mo Di Mi Do Fr Sa So)
+
+# 2. Zugriff auf einzelne Elemente
+echo "${tage[0]}"       # Erstes Element ("Mo")
+echo "${tage[2]}"       # Drittes Element ("Mi")
+echo "${tage[-1]}"      # Letztes Element ("So")
+
+# 3. Alle Elemente ausgeben
+echo "${tage[*]}"       # Als eine Zeichenkette
+echo "${tage[@]}"       # Als getrennte Elemente
+
+# 4. Anzahl der Elemente (Array-Länge)
+echo "${#tage[*]}"      # z. B. 7
+
+# 5. Länge eines einzelnen Elements ermitteln
+echo "${#tage[0]}"      # Länge von "Mo" -> 2
+
+# 6. Element nachträglich zuweisen oder ändern
+tage[2]="Mittwoch"
+
+# 7. Elemente an das Array anhängen (+=)
+tage+=(Wochenende Feiertag)
+
+# 8. Array kopieren
+kopie=("${tage[@]}")
+
+# 9. Element oder ganzes Array löschen (unset)
+unset tage[1]           # Löscht das Element an Index 1
+unset tage              # Löscht das gesamte Array
+```
+
+### 5. Fallunterscheidungen mit `case ... esac`
 Die `case`-Verzweigung eignet sich hervorragend, um eine Variable gegen viele feste Werte oder Muster zu prüfen (übersichtlicher als viele `if ... elif`-Zweige):
 
 ```bash
@@ -96,7 +144,23 @@ esac
 * **`;;`** beendet einen Musterblock (vergleichbar mit `break` in anderen Programmiersprachen).
 * **Auswertungsreihenfolge:** Bash prüft die Muster **von oben nach unten**. Sobald das erste Muster zutrifft, wird der Block ausgeführt und das `case` beendet. (Siehe Beispiel in [`sc/zahlen/script.sh`](sc/zahlen/script.sh)).
 
-### 5. Schleifen
+### 6. Schleifen
+
+#### C-Style `for`-Schleife (vorwärts & rückwärts)
+```bash
+# Vorwärts zählen:
+for ((i=0; i<10; i++)); do
+    echo "Index: $i"
+done
+
+# Rückwärts zählen (z. B. zum Umkehren eines Strings):
+for ((i=${#text}-1; i>=0; i--)); do
+    echo -n "${text:$i:1}"
+done
+```
+
+> [!NOTE]
+> `echo -n` unterdrückt den automatischen Zeilenumbruch am Ende, sodass Zeichen direkt nebeneinander ausgegeben werden können.
 
 #### Zeilenweises Einlesen mit `while read`
 Um Textdaten oder Streams zeilenweise zu verarbeiten:
@@ -107,14 +171,7 @@ done
 ```
 * Liest solange aus der Standardeingabe (`stdin`), bis das Dateiende (**EOF** / *End of File*) erreicht wird.
 
-#### C-Style `for`-Schleife
-```bash
-for ((i=0; i<10; i++)); do
-    echo "Index: $i"
-done
-```
-
-### 6. I/O-Umleitungen & Pipes
+### 7. I/O-Umleitungen & Pipes
 
 | Operator | Funktion | Beispiel |
 | :--- | :--- | :--- |
