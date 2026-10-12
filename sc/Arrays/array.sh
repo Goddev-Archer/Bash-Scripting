@@ -1,3 +1,5 @@
+#!/bin/bash
+
 array=(Mo Di Ku)
 # array[0]
 array[2]=Mi
