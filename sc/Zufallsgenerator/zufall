@@ -1,0 +1,22 @@
+#!/bin/bash
+# Nutzung des "Minimal Standard"-Kongruenzgenerators (LCG) zur Erzeugung von Pseudozufallszahlen.
+
+
+if [[ $1 == "-h" || $1 == "--help" ]]; then
+	echo "Verwendung: $0 INPUT SECOND_INPUT"
+	echo "Erzeugt eine Pseudozufallszahl mit dem Minimal-Standard-LCG."
+	exit 0
+fi
+
+if [[ $# -ne 2 || ! $1 =~ ^[0-9]+$ || ! $2 =~ ^[0-9]+$ ]]; then
+	echo "Verwendung: $0 INPUT SECOND_INPUT" >&2
+	exit 1
+fi
+
+INPUT=$1
+SECOND_INPUT=$2
+A=16807
+MODULUS=2147483647
+
+OUTPUT=$(( (A * INPUT + SECOND_INPUT) % MODULUS ))
+echo "$OUTPUT"
